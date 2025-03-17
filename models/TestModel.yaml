@@ -2,9 +2,41 @@ title: TestModel
 x-stoplight:
   id: 3eef1q5lp6qtz
 type: object
+description: Model CL
 properties:
   id:
-    type: string
+    type: array
     x-stoplight:
       id: hrbtt81i037w8
-description: Model CL
+    items:
+      x-stoplight:
+        id: 19k0gugcny6r0
+      type: array
+      items:
+        x-stoplight:
+          id: ant9nx9sf3sn0
+        type: array
+        items:
+          x-stoplight:
+            id: fihxi2h63veg4
+          type: array
+          items:
+            x-stoplight:
+              id: l9xhfvwtimgcp
+            type: array
+            items:
+              x-stoplight:
+                id: mr12srd4rdf3t
+              type: array
+              items:
+                x-stoplight:
+                  id: 08qb08vbnjdin
+                type: boolean
+  name:
+    x-stoplight:
+      id: db7lgczwk8cd3
+    enum: []
+  address:
+    type: integer
+    x-stoplight:
+      id: miv1ss4q9yeyc
