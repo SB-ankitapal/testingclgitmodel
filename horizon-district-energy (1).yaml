@@ -1,0 +1,1161 @@
+openapi: 3.1.0
+info:
+  version: 2.0.0
+  title: Horizon District Energy
+  summary: API for district energy in Horizon.
+  description: 'All operations related to district energy. '
+servers:
+  - url: 'http://localhost:8000/api/v2/district-energy'
+    description: localhost
+paths:
+  /measure-points:
+    get:
+      summary: Get Measure Points
+      description: Get a paginated list of all measure points.
+      operationId: get-measure-points
+      parameters:
+        - name: search
+          in: query
+          description: Search by measure point id or address
+          schema:
+            type: string
+            title: Search
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedMeasurePoint'
+        default:
+          description: Default
+          content:
+            application/problem+json:
+              schema:
+                x-sl-error-message: Could not find override for branch id cmXT90yNYsw
+      security: []
+      servers:
+        - url: 'http://localhost:8000/api/v2/district-energy'
+          description: localhost
+  '/measure-points/{id}':
+    get:
+      summary: Get Measure Point
+      description: Get a measure point by id.
+      operationId: get-measure-point
+      parameters:
+        - name: id
+          in: path
+          description: The measure point id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeasurePoint'
+        default:
+          description: Default
+          content:
+            application/json:
+              schema:
+                x-sl-error-message: Could not find override for branch id cmXT90yNYsw
+      security: []
+      servers:
+        - url: 'http://localhost:8000/api/v2/district-energy'
+          description: localhost
+  '/measure-points/{id}/gateway-connection':
+    get:
+      summary: Get Gateway Connection
+      description: Get the gateway connection for a measure point.
+      operationId: get-gateway-connection
+      parameters:
+        - name: id
+          in: path
+          description: The measure point id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GatewayConnection'
+        default:
+          description: 404 if no connection exists
+          content:
+            application/json:
+              schema:
+                x-sl-error-message: Could not find override for branch id cmXT90yNYsw
+      security: []
+      servers:
+        - url: 'http://localhost:8000/api/v2/district-energy'
+          description: localhost
+  /communication-tests:
+    get:
+      summary: Get Communication Tests
+      description: Get a paginated list of all communication tests.
+      operationId: get-communication-tests
+      parameters:
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/measure_point_id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedCommunicationTest'
+        default:
+          description: Default
+          content:
+            application/json:
+              schema:
+                x-sl-error-message: Could not find override for branch id cmXT90yNYsw
+      security: []
+      servers:
+        - url: 'http://localhost:8000/api/v2/district-energy'
+          description: localhost
+    post:
+      summary: Create Communication Test
+      description: 'Create and run a new communication test, get the test back as response.'
+      operationId: create-communication-test
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommunicationTestCreate'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommunicationTest'
+        default:
+          description: Default
+          content:
+            application/json:
+              schema:
+                x-sl-error-message: Could not find override for branch id cmXT90yNYsw
+      security: []
+      servers:
+        - url: 'http://localhost:8000/api/v2/district-energy'
+          description: localhost
+  '/communication-tests/{id}':
+    get:
+      summary: Get Communication Test
+      description: Get a communication test by id.
+      operationId: get-communication-test
+      parameters:
+        - name: id
+          in: path
+          description: The communication test id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommunicationTest'
+        default:
+          description: Default
+          content:
+            application/json:
+              schema:
+                x-sl-error-message: Could not find override for branch id cmXT90yNYsw
+      servers:
+        - url: 'http://localhost:8000/api/v2/district-energy'
+          description: localhost
+  /functional-tests:
+    get:
+      summary: Get Functional Tests
+      description: Get a paginated list of all functional tests.
+      operationId: get-functional-tests
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/measure_point_id'
+        - name: circuit
+          in: query
+          description: Filter on one or multiple circuits.
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedFunctionalTest'
+        default:
+          description: Default
+          content:
+            application/json:
+              schema:
+                x-sl-error-message: Could not find override for branch id cmXT90yNYsw
+      security: []
+      servers:
+        - url: 'http://localhost:8000/api/v2/district-energy'
+          description: localhost
+    patch:
+      summary: Update Functional Test
+      description: Update a functional test by id.
+      operationId: update-functional-test
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FunctionalTestUpdate'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FunctionalTest'
+        default:
+          description: Default
+          content:
+            application/json:
+              schema:
+                x-sl-error-message: Could not find override for branch id cmXT90yNYsw
+      servers:
+        - url: 'http://localhost:8000/api/v2/district-energy'
+          description: localhost
+  '/functional-tests/{id}':
+    get:
+      summary: Get Functional Test
+      description: Get a functional test by id.
+      operationId: get-functional-test
+      parameters:
+        - name: id
+          in: path
+          description: The functional test id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FunctionalTest'
+        default:
+          description: Default
+          content:
+            application/json:
+              schema:
+                x-sl-error-message: Could not find override for branch id cmXT90yNYsw
+      security: []
+      servers:
+        - url: 'http://localhost:8000/api/v2/district-energy'
+          description: localhost
+  '/functional-tests/{id}/abort':
+    post:
+      summary: Abort Functional Test
+      description: Abort a functional test by id.
+      operationId: abort-functional-test
+      parameters:
+        - name: id
+          in: path
+          description: The functional test id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FunctionalTest'
+        default:
+          description: Default
+          content:
+            application/json:
+              schema:
+                x-sl-error-message: Could not find override for branch id cmXT90yNYsw
+      security: []
+      servers:
+        - url: 'http://localhost:8000/api/v2/district-energy'
+          description: localhost
+  /functional-tests/start:
+    post:
+      summary: Start Functional Test
+      description: Start a new test (if a test isn't running) and get the running test back as a response.
+      operationId: start-functional-test
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                measure_point_id:
+                  type: string
+                circuit:
+                  type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FunctionalTest'
+        default:
+          description: Default
+          content:
+            application/json:
+              schema:
+                x-sl-error-message: Could not find override for branch id cmXT90yNYsw
+      servers:
+        - url: 'http://localhost:8000/api/v2/district-energy'
+          description: localhost
+  /functional-tests/restart-reversed:
+    post:
+      summary: Restart Functional Test Reversed
+      description: 'Stop a running test and start a new test with the order of valve movement reversed, and get the running test back as a response.'
+      operationId: restart-functional-test-reversed
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                measure_point_id:
+                  type: string
+                circuit:
+                  type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FunctionalTest'
+        default:
+          description: Default
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FunctionalTest'
+      servers:
+        - url: 'http://localhost:8000/api/v2/district-energy'
+          description: localhost
+  /lora-tests:
+    get:
+      summary: Get Lora Tests
+      description: Get a paginated list or all lora tests.
+      operationId: get-lora-tests
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/measure_point_id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedLoraTest'
+        default:
+          description: Default
+          content:
+            application/json:
+              schema:
+                x-sl-error-message: Could not find override for branch id cmXT90yNYsw
+      security: []
+      servers:
+        - url: 'http://localhost:8000/api/v2/district-energy'
+          description: localhost
+  '/lora-tests/{id}':
+    get:
+      summary: Get Lora Test
+      description: Get a lora test by id.
+      operationId: get-lora-test
+      parameters:
+        - name: id
+          in: path
+          description: The lora test id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoraTest'
+        default:
+          description: Default
+          content:
+            application/json:
+              schema:
+                x-sl-error-message: Could not find override for branch id cmXT90yNYsw
+      security: []
+      servers:
+        - url: 'http://localhost:8000/api/v2/district-energy'
+          description: localhost
+  /lora-tests/start:
+    post:
+      summary: Start Lora Test
+      description: Start a new lora test (if a test isn't running) and get the running test back as a response.
+      operationId: start-lora-test
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                measure_point_id:
+                  type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoraTest'
+        default:
+          description: Default
+          content:
+            application/json:
+              schema:
+                x-sl-error-message: Could not find override for branch id cmXT90yNYsw
+      servers:
+        - url: 'http://localhost:8000/api/v2/district-energy'
+          description: localhost
+  /installation-images:
+    get:
+      summary: Get Installation Images
+      description: Get a paginated list of all installation images.
+      operationId: get-installation-images
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/measure_point_id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedInstallationImage'
+        default:
+          description: Default
+          content:
+            application/json:
+              schema:
+                x-sl-error-message: Could not find override for branch id cmXT90yNYsw
+      security: []
+      servers:
+        - url: 'http://localhost:8000/api/v2/district-energy'
+          description: localhost
+  /events:
+    get:
+      summary: Get Events
+      description: Get a paginated list of all events.
+      operationId: get-events
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/measure_point_id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedEvent'
+        default:
+          description: Default
+          content:
+            application/json:
+              schema:
+                x-sl-error-message: Could not find override for branch id cmXT90yNYsw
+      security: []
+      servers:
+        - url: 'http://localhost:8000/api/v2/district-energy'
+          description: localhost
+  /installations:
+    get:
+      summary: Get Installations
+      description: Get a paginated list of all installations.
+      operationId: get-installations
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/measure_point_id'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedInstallation'
+        default:
+          description: Default
+          content:
+            application/json:
+              schema:
+                x-sl-error-message: Could not find override for branch id cmXT90yNYsw
+      security: []
+      servers:
+        - url: 'http://localhost:8000/api/v2/district-energy'
+          description: localhost
+  '/installations/{id}':
+    get:
+      summary: Get Installation
+      description: Get an installation by id.
+      operationId: get-installation
+      parameters:
+        - name: id
+          in: path
+          description: The installation id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Installation'
+        default:
+          description: Default
+          content:
+            application/json:
+              schema:
+                x-sl-error-message: Could not find override for branch id cmXT90yNYsw
+      security: []
+      servers:
+        - url: 'http://localhost:8000/api/v2/district-energy'
+          description: localhost
+  /measure-point-functional-tests:
+    get:
+      summary: Get Measure Point Functional Tests
+      description: |-
+        Get a paginated list of each Measure Point and its latest completed Functional Test.
+
+        This is an aggregated response that combines selected data from a Measure Point and a Functional Test.
+      operationId: get-measure-point-functional-tests
+      parameters:
+        - name: actuator_type
+          in: query
+          description: Specify the type of acuator to query for
+          schema:
+            $ref: '#/components/schemas/ActuatorType'
+        - name: reason_for_approval
+          in: query
+          description: Specify reason for manually approved test
+          schema:
+            $ref: '#/components/schemas/FunctionalTestReasonForApproval'
+        - name: end_time
+          in: query
+          description: Specify the start date to query to
+          schema:
+            type: string
+            format: date-time
+        - name: errors
+          in: query
+          description: Specify the error codes to query for
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/FunctionalTestError'
+        - name: district_energy_type
+          in: query
+          description: Specify what district energy type to query for
+          schema:
+            $ref: '#/components/schemas/DistrictEnergyType'
+        - name: intelligy_plans
+          in: query
+          description: Specify the active Intelligy plans to query for
+          schema:
+            type: array
+            items:
+              x-sl-error-message: Could not find override for branch id oBoQiPl35Ig
+        - name: start_time
+          in: query
+          description: Specify the start date to query from
+          schema:
+            type: string
+            format: date-time
+        - name: test_status
+          in: query
+          description: Specify if all results should be manually approved
+          schema:
+            $ref: '#/components/schemas/FunctionalTestStatus'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/offset'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PagedMeasurePointFunctionalTest'
+        default:
+          description: Default
+          content:
+            application/json:
+              schema:
+                x-sl-error-message: Could not find override for branch id cmXT90yNYsw
+      security: []
+      servers:
+        - url: 'http://localhost:8000/api/v2/district-energy'
+          description: localhost
+components:
+  parameters:
+    limit:
+      name: limit
+      in: query
+      description: How many listed entries to show in a paginated response
+      schema:
+        type: integer
+        default: 100
+    offset:
+      name: offset
+      in: query
+      description: The position from where to return listed entries
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+    measure_point_id:
+      name: measure_point_id
+      in: query
+      description: Filter on one or multiple Measure Point IDs.
+      allowEmptyValue: false
+      style: form
+      explode: true
+      schema:
+        type: array
+        items:
+          type: string
+  schemas:
+    PagedMeasurePoint:
+      type: object
+      title: PagedMeasurePoint
+      properties:
+        items:
+          type: array
+          title: Items
+          items:
+            $ref: '#/components/schemas/MeasurePoint'
+        count:
+          type: integer
+          title: Count
+      required:
+        - items
+        - count
+    MeasurePoint:
+      type: object
+      title: MeasurePoint
+      properties:
+        id:
+          type: string
+          title: Id
+          readOnly: true
+        address:
+          type: string
+          title: Adress
+          readOnly: true
+        district_energy_type:
+          $ref: '#/components/schemas/DistrictEnergyType'
+        circuits:
+          type: array
+          description: 'VSxx or KSxx, xx=01-99'
+          items:
+            type: string
+            minLength: 4
+            maxLength: 4
+        intelligy_plans:
+          $ref: '#/components/schemas/IntelligyPlan'
+        network_owner:
+          type: string
+      required:
+        - id
+        - address
+        - district_energy_type
+        - circuits
+        - network_owner
+    DistrictEnergyType:
+      type: string
+      enum:
+        - heating
+        - cooling
+        - none
+      title: DistrictEnergyType
+    IntelligyPlan:
+      type: string
+      enum:
+        - basic
+        - heat
+        - heat_pump
+        - heat_start
+        - operation
+        - operation_manager
+        - ferroamp
+        - ferroamp_solar
+        - ferroamp_battery
+        - charge
+        - imd
+        - ventilation
+        - cooling_power_limit
+      title: IntelligyPlan
+      description: Available Intelligy plans in Intfas
+    GatewayConnection:
+      type: object
+      title: GatewayConnection
+      properties:
+        connection_status:
+          type: string
+        update_status:
+          type: string
+        signal_quality:
+          type: string
+        signal_strength:
+          type: string
+      required:
+        - connection_status
+        - update_status
+        - signal_quality
+        - signal_strength
+    PagedCommunicationTest:
+      type: object
+      title: PagedCommunicationTest
+      properties:
+        items:
+          type: array
+          title: Items
+          items:
+            $ref: '#/components/schemas/CommunicationTest'
+        count:
+          type: integer
+          title: Count
+      required:
+        - items
+        - count
+    CommunicationTest:
+      type: object
+      title: CommunicationTest
+      properties:
+        state:
+          $ref: '#/components/schemas/CommunicationTestState'
+        id:
+          type: integer
+          title: ID
+        measure_point_id:
+          type: string
+          title: Mätpunkt
+        created_at:
+          $ref: '#/components/schemas/DateTime'
+        gateway_connectivity:
+          type: boolean
+          title: Gateway kommunikation
+          default: false
+        duc_connectivity:
+          type: boolean
+          title: DUC
+          default: false
+        meterbus_connectivity:
+          type: boolean
+          title: I-Verk
+          default: false
+        errors:
+          type: array
+          title: Fel
+          items:
+            type: string
+        verified_data_points:
+          type: array
+          title: Verifierade Datapunkter
+          items:
+            type: string
+        user_name:
+          type: string
+          title: Användare
+        comment:
+          type: string
+          title: Kommentar
+      required:
+        - state
+        - id
+        - measure_point_id
+        - created_at
+        - gateway_connectivity
+        - duc_connectivity
+        - meterbus_connectivity
+    CommunicationTestState:
+      type: string
+      enum:
+        - testing
+        - completed
+        - timeout
+      title: CommunicationTestState
+    DateTime:
+      type: string
+      title: DateTime
+      description: We use ISO 8601 with UTC
+      format: date-time
+      pattern: '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+      examples:
+        - '2024-11-13T14:00:00Z'
+    CommunicationTestCreate:
+      type: object
+      title: CommunicationTestCreate
+      properties:
+        measure_point_id:
+          type: string
+    PagedFunctionalTest:
+      type: object
+      title: PagedFunctionalTest
+      properties:
+        items:
+          type: array
+          title: Items
+          items:
+            $ref: '#/components/schemas/FunctionalTest'
+        count:
+          type: integer
+          title: Count
+      required:
+        - items
+        - count
+    FunctionalTest:
+      type: object
+      title: FunctionalTest
+      properties:
+        id:
+          type: integer
+        state:
+          $ref: '#/components/schemas/FunctionalTestState'
+        measure_point_id:
+          type: string
+        reason_for_approval:
+          $ref: '#/components/schemas/FunctionalTestReasonForApproval'
+        circuit:
+          type: string
+          maxLength: 4
+        test_type:
+          $ref: '#/components/schemas/FunctionalTestType'
+        config:
+          type: object
+        start_time:
+          $ref: '#/components/schemas/DateTime'
+        end_time:
+          $ref: '#/components/schemas/DateTime'
+        status:
+          $ref: '#/components/schemas/FunctionalTestStatus'
+        errors:
+          type: array
+          items:
+            type: string
+        user_name:
+          type: string
+        context:
+          $ref: '#/components/schemas/FunctionalTestContext'
+        comment:
+          type: string
+        restartable:
+          type: boolean
+      required:
+        - id
+        - state
+        - measure_point_id
+    FunctionalTestState:
+      type: string
+      enum:
+        - pending
+        - testing
+        - completed
+        - cancelled
+      title: FunctionalTestState
+      description: |-
+        pending - Waiting for test to start
+        testing - Test is running
+        completed - Test finished (not meaning succeeded)
+        cancelled - Test aborted
+    FunctionalTestReasonForApproval:
+      type: string
+      enum:
+        - wrong_direction
+        - slow_change
+        - other
+      title: FunctionalTestReasonForApproval
+    FunctionalTestType:
+      type: string
+      enum:
+        - kelvin
+        - backend
+        - none
+      title: FunctionalTestType
+      description: Indicates where the test ran.
+    FunctionalTestStatus:
+      type: string
+      enum:
+        - approved
+        - manually_approved
+        - failed
+      title: FunctionalTestStatus
+      description: |-
+        approved - Successful test
+        manually_approved - Test marked as successful manually
+        failed - Test failed
+    FunctionalTestContext:
+      type: string
+      enum:
+        - user
+        - operational
+      title: FunctionalTestContext
+      description: 'Context in which the test was started. '
+    FunctionalTestUpdate:
+      type: object
+      title: FunctionalTestUpdate
+      properties:
+        id:
+          type: integer
+          title: ID
+        state:
+          $ref: '#/components/schemas/FunctionalTestState'
+        reason_for_approval:
+          $ref: '#/components/schemas/FunctionalTestReasonForApproval'
+        test_succeeded:
+          type: boolean
+          title: Avklarat
+          default: false
+        comment:
+          type: string
+          title: Kommentar
+      required:
+        - id
+    PagedLoraTest:
+      type: object
+      title: PagedLoraTest
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/LoraTest'
+        count:
+          type: integer
+      required:
+        - items
+        - count
+    LoraTest:
+      type: object
+      title: LoraTest
+      properties:
+        measure_point_id:
+          type: string
+        user_name:
+          type: string
+        start_time:
+          $ref: '#/components/schemas/DateTime'
+        state:
+          $ref: '#/components/schemas/LoraTestState'
+      required:
+        - measure_point_id
+        - user_name
+        - start_time
+        - state
+    LoraTestState:
+      type: string
+      enum:
+        - testing
+        - completed
+        - timeout
+        - failed
+      title: LoraTestState
+    PagedInstallationImage:
+      type: object
+      title: PagedEvent
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/InstallationImage'
+        count:
+          type: integer
+      required:
+        - items
+        - count
+    InstallationImage:
+      type: object
+      title: InstallationImage
+      properties:
+        description:
+          type: string
+        depiction:
+          type: string
+        url:
+          type: string
+        measure_point_id:
+          type: string
+      required:
+        - description
+        - depiction
+        - url
+        - measure_point_id
+    PagedEvent:
+      type: object
+      title: PagedEvent
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+        count:
+          type: integer
+      required:
+        - items
+        - count
+    Event:
+      type: object
+      title: Event
+      description: An event related to a Measure Point
+      properties:
+        created_at:
+          $ref: '#/components/schemas/DateTime'
+        title:
+          type: string
+        content:
+          type: string
+        user_name:
+          type: string
+        measure_point_id:
+          type: string
+      required:
+        - created_at
+        - title
+        - content
+        - user_name
+        - measure_point_id
+    PagedInstallation:
+      type: object
+      title: PagedInstallation
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Installation'
+        count:
+          type: integer
+      required:
+        - items
+        - count
+    Installation:
+      type: object
+      title: Installation
+      properties:
+        status:
+          type: object
+          properties:
+            gateway_config:
+              type: string
+              enum:
+                - pending
+                - completed
+            circuit_config:
+              type: string
+              enum:
+                - pending
+                - completed
+                - not_applicable
+          required:
+            - gateway_config
+            - circuit_config
+        type:
+          type: string
+      required:
+        - status
+        - type
+    ActuatorType:
+      type: string
+      enum:
+        - modulating
+        - open_close
+      title: ActuatorType
+    FunctionalTestError:
+      type: string
+      title: FunctionalTestError
+    PagedMeasurePointFunctionalTest:
+      type: object
+      title: PagedMeasurePoint
+      properties:
+        items:
+          type: array
+          title: Items
+          items:
+            $ref: '#/components/schemas/MeasurePointFunctionalTest'
+        count:
+          type: integer
+          title: Count
+      required:
+        - items
+        - count
+    MeasurePointFunctionalTest:
+      type: object
+      title: MeasurePointFunctionalTest
+      properties:
+        test_id:
+          type: integer
+          title: Id
+        measure_point_id:
+          type: string
+          title: Adress
+          readOnly: true
+        test_status:
+          $ref: '#/components/schemas/FunctionalTestStatus'
+        reason_for_approval:
+          $ref: '#/components/schemas/FunctionalTestReasonForApproval'
+        start_time:
+          $ref: '#/components/schemas/DateTime'
+        errors:
+          type: array
+          items:
+            type: string
+        comment:
+          type: string
+        intelligy_plans:
+          type: array
+          items:
+            $ref: '#/components/schemas/IntelligyPlan'
+        actuator_type:
+          $ref: '#/components/schemas/ActuatorType'
+        end_time:
+          $ref: '#/components/schemas/DateTime'
+        grafana_link:
+          type: string
+        district_energy_type:
+          $ref: '#/components/schemas/DistrictEnergyType'
+        user_name:
+          type: string
+      required:
+        - test_id
+        - measure_point_id
+        - test_status
+        - start_time
+        - intelligy_plans
+        - actuator_type
+        - end_time
+        - grafana_link
+        - district_energy_type

@@ -1,0 +1,10 @@
+title: TestModel
+x-stoplight:
+  id: 3eef1q5lp6qtz
+type: object
+properties:
+  id:
+    type: string
+    x-stoplight:
+      id: hrbtt81i037w8
+description: Model CL
